@@ -6,12 +6,20 @@
     "require": {
         "php": "^8.3",
         "symfony/console": "^7.0",
-        "moffhub/mps-spec": "*",
-        "moffhub/connector-sdk": "*"
+        "moffhub/mps-spec": "@dev",
+        "moffhub/connector-sdk": "@dev",
+        "moffhub/connector-mpesa": "@dev",
+        "moffhub/connector-paystack": "@dev",
+        "moffhub/connector-flutterwave": "@dev",
+        "moffhub/connector-pesapal": "@dev"
     },
     "repositories": [
         { "type": "path", "url": "../../packages/mps-spec" },
-        { "type": "path", "url": "../../packages/connector-sdk" }
+        { "type": "path", "url": "../../packages/connector-sdk" },
+        { "type": "path", "url": "../../connectors/mpesa" },
+        { "type": "path", "url": "../../connectors/paystack" },
+        { "type": "path", "url": "../../connectors/flutterwave" },
+        { "type": "path", "url": "../../connectors/pesapal" }
     ],
     "autoload": {
         "psr-4": {

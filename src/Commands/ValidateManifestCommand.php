@@ -3,16 +3,16 @@ declare(strict_types=1);
 namespace Moffhub\Cli\Commands;
 
 use Moffhub\MpsSpec\Contracts\ConnectorInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'validate', description: 'Validate a connector manifest against the MPS spec')]
 class ValidateManifestCommand extends Command
 {
-    protected static $defaultName = 'validate';
-    protected static $defaultDescription = 'Validate a connector manifest against the MPS spec';
 
     protected function configure(): void
     {

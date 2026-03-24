@@ -4,6 +4,7 @@ namespace Moffhub\Cli\Commands;
 
 use Moffhub\Cli\Certification\CertificationRunner;
 use Moffhub\Cli\Certification\CertificationReport;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,10 +12,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'certify', description: 'Run certification tests against a connector')]
 class CertifyCommand extends Command
 {
-    protected static $defaultName = 'certify';
-    protected static $defaultDescription = 'Run certification tests against a connector';
 
     protected function configure(): void
     {

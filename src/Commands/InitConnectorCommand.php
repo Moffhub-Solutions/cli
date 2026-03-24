@@ -2,16 +2,16 @@
 declare(strict_types=1);
 namespace Moffhub\Cli\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'init-connector', description: 'Scaffold a new MPS connector package')]
 class InitConnectorCommand extends Command
 {
-    protected static $defaultName = 'init-connector';
-    protected static $defaultDescription = 'Scaffold a new MPS connector package';
 
     protected function configure(): void
     {
