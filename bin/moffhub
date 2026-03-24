@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Moffhub\Cli\Commands\CertifyCommand;
+use Moffhub\Cli\Commands\InitConnectorCommand;
+use Moffhub\Cli\Commands\ValidateManifestCommand;
+use Symfony\Component\Console\Application;
+
+$app = new Application('moffhub', '0.1.0');
+
+$app->add(new CertifyCommand());
+$app->add(new InitConnectorCommand());
+$app->add(new ValidateManifestCommand());
+
+$app->run();

@@ -1,0 +1,24 @@
+{
+    "name": "moffhub/cli",
+    "description": "Moffhub Payment Standard CLI - Connector certification and management",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "symfony/console": "^7.0",
+        "moffhub/mps-spec": "*",
+        "moffhub/connector-sdk": "*"
+    },
+    "repositories": [
+        { "type": "path", "url": "../../packages/mps-spec" },
+        { "type": "path", "url": "../../packages/connector-sdk" }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Moffhub\\Cli\\": "src/"
+        }
+    },
+    "bin": ["bin/moffhub"],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
