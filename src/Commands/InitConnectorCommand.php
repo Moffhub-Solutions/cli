@@ -42,17 +42,17 @@ class InitConnectorCommand extends Command
 
         file_put_contents($dir . '/composer.json', json_encode([
             'name' => "vendor/connector-{$slug}",
-            'description' => "{$name} connector for PayOrchestra",
+            'description' => "{$name} MPS connector",
             'type' => 'library',
-            'license' => 'proprietary',
+            'license' => 'MIT',
             'require' => [
                 'php' => '^8.3',
-                'moffhub/mps-spec' => '*',
-                'moffhub/connector-sdk' => '*',
+                'moffhub/mps-spec' => '^0.1',
+                'moffhub/connector-sdk' => '^0.1',
                 'guzzlehttp/guzzle' => '^7.0',
             ],
             'autoload' => ['psr-4' => ["{$namespace}\\" => 'src/']],
-            'minimum-stability' => 'dev',
+            'minimum-stability' => 'stable',
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         $connectorTemplate = <<<PHP

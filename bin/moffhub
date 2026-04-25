@@ -2,7 +2,60 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+// Locate the CLI's own autoloader (works whether installed globally,
+// as a project dependency, or from a clone).
+$cliAutoloads = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$cliAutoloadFound = false;
+foreach ($cliAutoloads as $autoload) {
+    if (is_file($autoload)) {
+        require $autoload;
+        $cliAutoloadFound = true;
+        break;
+    }
+}
+
+if (! $cliAutoloadFound) {
+    fwrite(STDERR, "Could not locate the moffhub/cli autoloader.\n");
+    fwrite(STDERR, "Install via: composer global require moffhub/cli\n");
+    exit(1);
+}
+
+// Optionally bootstrap a project autoloader so the CLI can resolve
+// connector classes that live in the user's project vendor tree.
+$bootstrap = null;
+foreach ($argv as $i => $arg) {
+    if ($arg === '--bootstrap' && isset($argv[$i + 1])) {
+        $bootstrap = $argv[$i + 1];
+        unset($argv[$i], $argv[$i + 1]);
+        $argv = array_values($argv);
+        break;
+    }
+    if (str_starts_with($arg, '--bootstrap=')) {
+        $bootstrap = substr($arg, 12);
+        unset($argv[$i]);
+        $argv = array_values($argv);
+        break;
+    }
+}
+
+if ($bootstrap === null) {
+    $candidate = getcwd() . '/vendor/autoload.php';
+    if (is_file($candidate)) {
+        $bootstrap = $candidate;
+    }
+}
+
+if ($bootstrap !== null) {
+    if (! is_file($bootstrap)) {
+        fwrite(STDERR, "Bootstrap autoloader not found: {$bootstrap}\n");
+        exit(1);
+    }
+    require $bootstrap;
+}
 
 use Moffhub\Cli\Commands\CertifyCommand;
 use Moffhub\Cli\Commands\InitConnectorCommand;

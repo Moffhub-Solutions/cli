@@ -1,32 +1,28 @@
 {
     "name": "moffhub/cli",
-    "description": "Moffhub Payment Standard CLI - Connector certification and management",
+    "description": "Moffhub Payment Standard CLI - scaffold, validate, and certify MPS connectors",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
+    "keywords": ["payments", "mps", "moffhub", "cli", "connector", "certification"],
+    "homepage": "https://github.com/Moffhub-Solutions/cli",
+    "support": {
+        "issues": "https://github.com/Moffhub-Solutions/cli/issues",
+        "source": "https://github.com/Moffhub-Solutions/cli"
+    },
+    "authors": [
+        { "name": "Moffhub", "homepage": "https://moffhub.com" }
+    ],
     "require": {
         "php": "^8.3",
         "symfony/console": "^7.0",
-        "moffhub/mps-spec": "@dev",
-        "moffhub/connector-sdk": "@dev",
-        "moffhub/connector-mpesa": "@dev",
-        "moffhub/connector-paystack": "@dev",
-        "moffhub/connector-flutterwave": "@dev",
-        "moffhub/connector-pesapal": "@dev"
+        "moffhub/mps-spec": "^0.1"
     },
-    "repositories": [
-        { "type": "path", "url": "../../packages/mps-spec" },
-        { "type": "path", "url": "../../packages/connector-sdk" },
-        { "type": "path", "url": "../../connectors/mpesa" },
-        { "type": "path", "url": "../../connectors/paystack" },
-        { "type": "path", "url": "../../connectors/flutterwave" },
-        { "type": "path", "url": "../../connectors/pesapal" }
-    ],
     "autoload": {
         "psr-4": {
             "Moffhub\\Cli\\": "src/"
         }
     },
     "bin": ["bin/moffhub"],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
