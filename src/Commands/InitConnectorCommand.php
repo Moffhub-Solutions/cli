@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Moffhub\Cli\Commands;
 
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -12,7 +14,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'init-connector', description: 'Scaffold a new MPS connector package')]
 class InitConnectorCommand extends Command
 {
-
     protected function configure(): void
     {
         $this
@@ -26,21 +27,22 @@ class InitConnectorCommand extends Command
         $name = $input->getArgument('name');
         $namespace = $input->getArgument('namespace');
 
-        $dir = getcwd() . '/' . $name;
+        $dir = getcwd().'/'.$name;
 
         if (is_dir($dir)) {
             $io->error("Directory {$name} already exists.");
+
             return Command::FAILURE;
         }
 
-        mkdir($dir . '/src/Support', 0755, true);
-        mkdir($dir . '/tests', 0755, true);
+        mkdir($dir.'/src/Support', 0755, true);
+        mkdir($dir.'/tests', 0755, true);
 
         $slug = str_replace([' ', '_'], '-', strtolower($name));
-        $className = str_replace(['-', '_', ' '], '', ucwords($name, '-_ ')) . 'Connector';
+        $className = str_replace(['-', '_', ' '], '', ucwords($name, '-_ ')).'Connector';
         $escapedNs = str_replace('\\', '\\\\', $namespace);
 
-        file_put_contents($dir . '/composer.json', json_encode([
+        file_put_contents($dir.'/composer.json', json_encode([
             'name' => "vendor/connector-{$slug}",
             'description' => "{$name} MPS connector",
             'type' => 'library',
@@ -119,7 +121,7 @@ class InitConnectorCommand extends Command
         }
         PHP;
 
-        file_put_contents($dir . "/src/{$className}.php", $connectorTemplate);
+        file_put_contents($dir."/src/{$className}.php", $connectorTemplate);
 
         $io->success([
             "Connector scaffolded at: {$dir}",
@@ -127,7 +129,7 @@ class InitConnectorCommand extends Command
             '',
             'Next steps:',
             "1. cd {$name} && composer install",
-            "2. Implement createCharge(), queryCharge(), handleWebhook()",
+            '2. Implement createCharge(), queryCharge(), handleWebhook()',
             "3. Run: moffhub certify '{$namespace}\\{$className}' --sandbox",
         ]);
 

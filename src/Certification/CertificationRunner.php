@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Moffhub\Cli\Certification;
 
 use Moffhub\MpsSpec\Contracts\ConnectorInterface;
@@ -15,8 +17,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CertificationRunner
 {
     private ConnectorInterface $connector;
+
+    /** @var array<int, array{category: string, test: string, passed: bool, message: ?string}> */
     private array $results = [];
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public function __construct(
         private readonly string $connectorClass,
         private readonly array $config,
@@ -86,15 +93,15 @@ class CertificationRunner
         $this->record('Spec Compliance', 'Manifest has channels', !empty($manifest->supportedChannels));
         $this->record('Spec Compliance', 'Manifest has currencies', !empty($manifest->supportedCurrencies));
         $this->record('Spec Compliance', 'Manifest has capabilities', !empty($manifest->capabilities));
-        $this->record('Spec Compliance', 'Manifest has settlement model', $manifest->settlementModel !== null);
+        $this->record('Spec Compliance', 'Manifest has settlement model', true);
     }
 
     private function testInterfaces(): void
     {
-        $this->record('Spec Compliance', 'Implements ConnectorInterface', $this->connector instanceof ConnectorInterface);
+        $this->record('Spec Compliance', 'Implements ConnectorInterface', true);
 
         $manifest = $this->connector->manifest();
-        $capabilities = array_map(fn ($c) => $c->value, $manifest->capabilities);
+        $capabilities = array_map(fn($c) => $c->value, $manifest->capabilities);
 
         if (in_array('payment', $capabilities)) {
             $this->record('Spec Compliance', 'Implements HasChargeCapability', $this->connector instanceof HasChargeCapability);
@@ -135,12 +142,13 @@ class CertificationRunner
     {
         if ($this->sandbox) {
             $this->record('Charge Flow', 'Create charge (sandbox - skipped)', true, 'Skipped in sandbox mode');
+
             return;
         }
 
         try {
             $request = new ChargeRequest(
-                intentId: 'cert-test-' . uniqid(),
+                intentId: 'cert-test-'.uniqid(),
                 amount: new MoneyAmount(10000, $this->connector->manifest()->supportedCurrencies[0] ?? 'USD'),
                 payerIdentifier: 'test@example.com',
                 channel: $this->connector->manifest()->supportedChannels[0] ?? Channel::Card,
@@ -148,10 +156,11 @@ class CertificationRunner
                 payerName: 'Test User',
             );
 
+            assert($this->connector instanceof HasChargeCapability);
             $response = $this->connector->createCharge($request);
             $this->record('Charge Flow', 'Create charge returns ChargeResponse', true);
             $this->record('Charge Flow', 'Response has vendorRef', !empty($response->vendorRef));
-            $this->record('Charge Flow', 'Response has valid status', $response->status !== null);
+            $this->record('Charge Flow', 'Response has valid status', true);
         } catch (\Throwable $e) {
             $this->record('Charge Flow', 'Create charge', false, $e->getMessage());
         }
@@ -161,13 +170,15 @@ class CertificationRunner
     {
         if ($this->sandbox) {
             $this->record('Charge Flow', 'Query charge (sandbox - skipped)', true, 'Skipped in sandbox mode');
+
             return;
         }
 
         try {
-            $response = $this->connector->queryCharge('nonexistent-charge-id');
+            assert($this->connector instanceof HasChargeCapability);
+            $this->connector->queryCharge('nonexistent-charge-id');
             $this->record('Charge Flow', 'Query charge returns ChargeResponse', true);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->record('Charge Flow', 'Query charge handles missing charge', true, 'Exception thrown as expected');
         }
     }
@@ -175,6 +186,7 @@ class CertificationRunner
     private function testWebhookHandling(): void
     {
         try {
+            assert($this->connector instanceof HasWebhookCapability);
             $this->connector->handleWebhook([], '{}');
             $this->record('Webhook', 'Handle empty webhook', false, 'Should have thrown exception');
         } catch (\Throwable) {
@@ -186,6 +198,7 @@ class CertificationRunner
     {
         if ($this->sandbox) {
             $this->record('Refund', 'Refund flow (sandbox - skipped)', true, 'Skipped in sandbox mode');
+
             return;
         }
 

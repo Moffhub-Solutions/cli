@@ -13,7 +13,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 final class CommandsRegistrationTest extends TestCase
 {
-    public function test_application_has_all_three_commands(): void
+    public function testApplicationHasAllThreeCommands(): void
     {
         $app = $this->buildApplication();
 
@@ -22,7 +22,7 @@ final class CommandsRegistrationTest extends TestCase
         $this->assertTrue($app->has('validate'));
     }
 
-    public function test_validate_command_fails_when_class_does_not_exist(): void
+    public function testValidateCommandFailsWhenClassDoesNotExist(): void
     {
         $tester = new CommandTester($this->buildApplication()->find('validate'));
 
@@ -34,7 +34,7 @@ final class CommandsRegistrationTest extends TestCase
         $this->assertStringContainsString('not found', $tester->getDisplay());
     }
 
-    public function test_certify_command_fails_when_class_does_not_exist(): void
+    public function testCertifyCommandFailsWhenClassDoesNotExist(): void
     {
         $tester = new CommandTester($this->buildApplication()->find('certify'));
 
@@ -49,9 +49,9 @@ final class CommandsRegistrationTest extends TestCase
     private function buildApplication(): Application
     {
         $app = new Application('moffhub', '0.1.0');
-        $app->add(new CertifyCommand());
-        $app->add(new InitConnectorCommand());
-        $app->add(new ValidateManifestCommand());
+        $app->add(new CertifyCommand);
+        $app->add(new InitConnectorCommand);
+        $app->add(new ValidateManifestCommand);
 
         return $app;
     }

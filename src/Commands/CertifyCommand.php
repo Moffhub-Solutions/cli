@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Moffhub\Cli\Commands;
 
-use Moffhub\Cli\Certification\CertificationRunner;
 use Moffhub\Cli\Certification\CertificationReport;
+use Moffhub\Cli\Certification\CertificationRunner;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,7 +17,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'certify', description: 'Run certification tests against a connector')]
 class CertifyCommand extends Command
 {
-
     protected function configure(): void
     {
         $this
@@ -36,12 +37,16 @@ class CertifyCommand extends Command
 
         if (!class_exists($connectorClass)) {
             $io->error("Class {$connectorClass} not found. Ensure autoloading is configured.");
+
             return Command::FAILURE;
         }
 
         $config = [];
         if ($configPath && file_exists($configPath)) {
-            $config = json_decode(file_get_contents($configPath), true) ?? [];
+            $contents = file_get_contents($configPath);
+            if ($contents !== false) {
+                $config = json_decode($contents, true) ?? [];
+            }
             $io->text("Config loaded from: {$configPath}");
         }
 
@@ -62,7 +67,7 @@ class CertifyCommand extends Command
     {
         $io->table(
             ['Category', 'Test', 'Status', 'Message'],
-            array_map(fn ($result) => [
+            array_map(fn($result) => [
                 $result['category'],
                 $result['test'],
                 $result['passed'] ? '<fg=green>PASS</>' : '<fg=red>FAIL</>',

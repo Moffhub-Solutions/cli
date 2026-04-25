@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Moffhub\Cli\Commands;
 
 use Moffhub\MpsSpec\Contracts\ConnectorInterface;
@@ -13,7 +15,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'validate', description: 'Validate a connector manifest against the MPS spec')]
 class ValidateManifestCommand extends Command
 {
-
     protected function configure(): void
     {
         $this->addArgument('connector-class', InputArgument::REQUIRED, 'Fully qualified connector class name');
@@ -26,29 +27,51 @@ class ValidateManifestCommand extends Command
 
         if (!class_exists($connectorClass)) {
             $io->error("Class {$connectorClass} not found.");
+
             return Command::FAILURE;
         }
 
-        $connector = new $connectorClass();
+        $connector = new $connectorClass;
 
         if (!$connector instanceof ConnectorInterface) {
             $io->error("{$connectorClass} does not implement ConnectorInterface.");
+
             return Command::FAILURE;
         }
 
         $manifest = $connector->manifest();
         $errors = [];
 
-        if (empty($manifest->connectorId)) $errors[] = 'connectorId is empty';
-        if (empty($manifest->displayName)) $errors[] = 'displayName is empty';
-        if (empty($manifest->version)) $errors[] = 'version is empty';
-        if (empty($manifest->specVersion)) $errors[] = 'specVersion is empty';
-        if (empty($manifest->vendorName)) $errors[] = 'vendorName is empty';
-        if (empty($manifest->vendorWebsite)) $errors[] = 'vendorWebsite is empty';
-        if (empty($manifest->vendorSupportEmail)) $errors[] = 'vendorSupportEmail is empty';
-        if (empty($manifest->supportedChannels)) $errors[] = 'supportedChannels is empty';
-        if (empty($manifest->supportedCurrencies)) $errors[] = 'supportedCurrencies is empty';
-        if (empty($manifest->capabilities)) $errors[] = 'capabilities is empty';
+        if (empty($manifest->connectorId)) {
+            $errors[] = 'connectorId is empty';
+        }
+        if (empty($manifest->displayName)) {
+            $errors[] = 'displayName is empty';
+        }
+        if (empty($manifest->version)) {
+            $errors[] = 'version is empty';
+        }
+        if (empty($manifest->specVersion)) {
+            $errors[] = 'specVersion is empty';
+        }
+        if (empty($manifest->vendorName)) {
+            $errors[] = 'vendorName is empty';
+        }
+        if (empty($manifest->vendorWebsite)) {
+            $errors[] = 'vendorWebsite is empty';
+        }
+        if (empty($manifest->vendorSupportEmail)) {
+            $errors[] = 'vendorSupportEmail is empty';
+        }
+        if (empty($manifest->supportedChannels)) {
+            $errors[] = 'supportedChannels is empty';
+        }
+        if (empty($manifest->supportedCurrencies)) {
+            $errors[] = 'supportedCurrencies is empty';
+        }
+        if (empty($manifest->capabilities)) {
+            $errors[] = 'capabilities is empty';
+        }
 
         $io->title('Manifest Validation');
         $io->table(
@@ -59,9 +82,9 @@ class ValidateManifestCommand extends Command
                 ['Version', $manifest->version],
                 ['Spec Version', $manifest->specVersion],
                 ['Vendor', $manifest->vendorName],
-                ['Channels', implode(', ', array_map(fn ($c) => $c->value, $manifest->supportedChannels))],
+                ['Channels', implode(', ', array_map(fn($c) => $c->value, $manifest->supportedChannels))],
                 ['Currencies', implode(', ', $manifest->supportedCurrencies)],
-                ['Capabilities', implode(', ', array_map(fn ($c) => $c->value, $manifest->capabilities))],
+                ['Capabilities', implode(', ', array_map(fn($c) => $c->value, $manifest->capabilities))],
                 ['Settlement', $manifest->settlementModel->value],
                 ['Config Fields', (string) count($manifest->requiredConfig)],
             ],
@@ -69,6 +92,7 @@ class ValidateManifestCommand extends Command
 
         if (empty($errors)) {
             $io->success('Manifest is valid.');
+
             return Command::SUCCESS;
         }
 
