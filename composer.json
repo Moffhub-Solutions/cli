@@ -33,7 +33,7 @@
     ],
     "require": {
         "php": "^8.4|^8.5",
-        "moffhub/mps-spec": "^0.1",
+        "moffhub/mps-spec": "^0.1 || ^0.2",
         "symfony/console": "^7.0"
     },
     "require-dev": {
